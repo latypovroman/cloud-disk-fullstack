@@ -2,7 +2,7 @@ import React from "react";
 import "./Register.less";
 import { TextField } from "@mui/material";
 import ColorButton from "../../UI/ColorButton";
-import { registerUser } from "../../actions/user";
+import registerUser from "../../utils/registerUser";
 
 const Register = () => {
   const [email, setEmail] = React.useState("");
