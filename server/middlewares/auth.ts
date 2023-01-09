@@ -18,9 +18,7 @@ function auth(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
       return res.status(401).json({ message: "Authorization error" });
     }
 
-    const token = authorization.split(" ")[1];
-
-    console.log(jwt.verify(token, config.get("secret")));
+    const token = authorization.split('"')[1];
     req.user = jwt.verify(token, config.get("secret"));
     next();
   } catch (err) {

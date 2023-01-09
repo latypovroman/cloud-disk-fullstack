@@ -7,7 +7,7 @@ type UserAuth = {
 };
 
 export const fetchUser = createAsyncThunk(
-  "pizzas/fetchByIdStatus",
+  "user/fetchUser",
   async ({ email, password }: UserAuth) => {
     const response = await axios.post("http://localhost:5000/api/auth/login", {
       email,
@@ -16,6 +16,14 @@ export const fetchUser = createAsyncThunk(
     return response.data;
   }
 );
+
+export const authUser = createAsyncThunk("user/authUser", async () => {
+  const response = await axios.get("http://localhost:5000/api/auth/auth", {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+  console.log(response.data);
+  return response.data;
+});
 
 enum Status {
   LOADING = "loading",
@@ -69,6 +77,21 @@ export const userSlice = createSlice({
       state.status = Status.ERROR;
       state.currentUser = {};
       console.log("Failed to fetch user");
+    });
+    builder.addCase(authUser.pending, (state) => {
+      state.status = Status.LOADING;
+      state.currentUser = {};
+    });
+    builder.addCase(authUser.fulfilled, (state, action) => {
+      state.status = Status.SUCCESS;
+      state.currentUser = action.payload.user;
+      state.isAuth = true;
+    });
+    builder.addCase(authUser.rejected, (state) => {
+      state.status = Status.ERROR;
+      state.currentUser = {};
+      console.log("Authorization error");
+      // localStorage.removeItem("token");
     });
   },
 });

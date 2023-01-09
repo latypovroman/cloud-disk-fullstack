@@ -61,6 +61,7 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!isValid) {
       return res.status(404).json({ message: `User or password incorrect` });
     }
+
     const token = jwt.sign({ id: user.id }, config.get("secret"), {
       expiresIn: "1d",
     });
@@ -85,7 +86,8 @@ router.get(
   auth,
   async (req: IGetUserAuthInfoRequest, res: Response) => {
     try {
-      const user = await User.findOne({ id: req.user });
+      const user = await User.findOne({ _id: req.user.id });
+
       const token = jwt.sign({ id: user.id }, config.get("secret"), {
         expiresIn: "1d",
       });
