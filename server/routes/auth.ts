@@ -4,11 +4,13 @@ import { IGetUserAuthInfoRequest } from "../middlewares/auth";
 const { Router } = require("express");
 const config = require("config");
 const User = require("../models/User");
+const File = require("../models/File");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 const router = new Router();
 const auth = require("../middlewares/auth");
+const fileService = require("../services/fileService");
 
 router.post(
   "/register",
@@ -39,6 +41,7 @@ router.post(
       const hash = await bcrypt.hash(password, 10);
       const user = new User({ email, password: hash });
       await user.save();
+      await fileService.createDirectory(new File({ user: user.id, name: "" }));
       return res.json({ message: "User created!" });
     } catch (err) {
       console.log(err);

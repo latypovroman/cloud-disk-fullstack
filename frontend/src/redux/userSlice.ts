@@ -21,7 +21,6 @@ export const authUser = createAsyncThunk("user/authUser", async () => {
   const response = await axios.get("http://localhost:5000/api/auth/auth", {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });
-  console.log(response.data);
   return response.data;
 });
 
@@ -91,7 +90,7 @@ export const userSlice = createSlice({
       state.status = Status.ERROR;
       state.currentUser = {};
       console.log("Authorization error");
-      // localStorage.removeItem("token");
+      localStorage.removeItem("token");
     });
   },
 });
